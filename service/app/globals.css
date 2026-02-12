@@ -1,0 +1,117 @@
+@import "tailwindcss";
+@plugin "daisyui";
+/* @import 'react-big-calendar/lib/css/react-big-calendar.css'; */
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.rbc-month-view .rbc-row-content {
+  min-height: 100px !important;
+}
+
+.rbc-month-view .rbc-row-content .rbc-row {
+  flex-wrap: wrap !important;
+}
+
+.rbc-month-view .rbc-event {
+  margin: 1px !important;
+  font-size: 11px !important;
+  padding: 1px 3px !important;
+}
+
+.rbc-timeslot-group{
+  min-height: 100px !important;
+}
+.rbc-month-view {
+  height: 100% !important;
+}
+
+.rbc-date-cell {
+  text-align: right !important;
+  padding: 4px 8px !important;
+  font-weight: 500;
+}
+
+.rbc-row-bg {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.rbc-day-bg {
+  flex: 1 !important;
+  min-height: 120px !important;
+}
+
+.rbc-row-content {
+  flex: 1 !important;
+  min-height: 0 !important;
+}
+
+.rbc-event {
+  min-height: 18px !important;
+  margin-bottom: 1px !important;
+  padding: 1px 2px !important;
+  font-size: 10px !important;
+  line-height: 1.2 !important;
+}
+
+.rbc-event:focus {
+  outline: none !important;
+}
+
+/* Для недельного и дневного вида */
+.rbc-time-view .rbc-event {
+  font-size: 12px !important;
+  padding: 2px !important;
+}
+
+.rbc-time-view .rbc-event-content {
+  padding: 0 !important;
+}
+
+.rbc-addons-dnd .rbc-addons-dnd-row-body {
+  position: relative !important;
+}
+
+.rbc-show-more {
+  font-size: 10px !important;
+  padding: 2px !important;
+  background: rgba(245, 158, 11, 0.1) !important;
+  color: #f59e0b !important;
+  font-weight: 500;
+}
+.rbc-day-bg.rbc-today{
+  background-color: moccasin;
+}
+.rbc-header.rbc-today{
+  background-color: moccasin;
+}
+.rbc-day-slot.rbc-time-column.rbc-now.rbc-today{
+  background-color: moccasin;
+}
+.rbc-date-cell.rbc-now {
+  background-color: moccasin;
+}
+
