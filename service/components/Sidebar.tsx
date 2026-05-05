@@ -2,7 +2,7 @@
 
 import { useAuth } from '@/lib/auth';
 import { useState, useEffect } from 'react';
-import { Album, Car, CircleUser, LogOut, LucideIcon, PanelRightClose, PanelRightOpen, Wrench } from 'lucide-react';
+import { Album, Car, CircleUser, ListOrdered, LogOut, LucideIcon, PanelRightClose, PanelRightOpen, Users, Wrench, Book } from 'lucide-react';
 
 export default function SidebarLayout({ children }: { children: React.ReactNode }) {
   const { user, logout } = useAuth();
@@ -76,9 +76,11 @@ export default function SidebarLayout({ children }: { children: React.ReactNode 
               <SidebarItem href="/vehicles" icon={Car} label="Автомобили" collapsed={collapsed} index={1}/>
               <SidebarItem href="/employee" icon={Wrench} label="Мастера" collapsed={collapsed} index={2}/>
               <SidebarItem href="/reports" icon={Album} label="Отчёты" collapsed={collapsed} index={3}/>
+              <SidebarItem href="/orders" icon={ListOrdered} label="Заказы" collapsed={collapsed} index={4}/>
+              <SidebarItem href="/customers" icon={Users} label="Клиенты" collapsed={collapsed} index={5}/>
+              <SidebarItem href="/services" icon={Book} label="Виды работ" collapsed={collapsed} index={6}/>
             </ul>
           </div>
-
           {/* Кнопка выхода — внизу */}
           <div className="flex flex-row border-t border-neutral-content/20 p-4 bg-gray-500 w-full justify-between relative">
             <div className={`absolute left-4 transition-all duration-300 ease-in-out whitespace-nowrap py-2 ${
