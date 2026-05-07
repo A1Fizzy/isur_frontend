@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth";
 import Loader from "@/components/Loader";
+import { Vehicle } from "@/lib/schema";
 
 interface Order {
   id: number;
@@ -46,6 +47,7 @@ export default function OrdersPage() {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [services, setServices] = useState<Service[]>([]);
   const [employees, setEmployees] = useState<Employee[]>([]);
+  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
 
   // Состояние для формы
   const [newOrder, setNewOrder] = useState<{
@@ -54,14 +56,18 @@ export default function OrdersPage() {
     preferredTime: string;
     duration: number | null;
     employeeId: number | null;
+    vehicleId: number | null;
     status: "pending" | "in_progress" | "completed" | "cancelled";
+    priority: string;
   }>({
     customerId: null,
     serviceId: null,
     preferredTime: "",
     duration: null,
     employeeId: null,
+    vehicleId: null,
     status: "pending",
+    priority: "NORMAL"
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -106,7 +112,7 @@ export default function OrdersPage() {
 
     setIsDataLoading(true);
     try {
-      const [customersRes, servicesRes, employeesRes] = await Promise.all([
+      const [customersRes, servicesRes, employeesRes, vehiclesRes] = await Promise.all([
         fetch(`${apiUrl}/customers`, {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         }),
@@ -116,17 +122,22 @@ export default function OrdersPage() {
         fetch(`${apiUrl}/employees`, {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         }),
+        fetch(`${apiUrl}/vehicles`, {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }),
       ]);
 
-      const [customersData, servicesData, employeesData] = await Promise.all([
+      const [customersData, servicesData, employeesData, vehiclesData] = await Promise.all([
         customersRes.json(),
         servicesRes.json(),
         employeesRes.json(),
+        vehiclesRes.json(),
       ]);
 
       setCustomers(customersData);
       setServices(servicesData);
       setEmployees(employeesData);
+      setVehicles(vehiclesData);
     } catch (err) {
       console.error("Ошибка загрузки справочных данных:", err);
       setError("Не удалось загрузить справочные данные");
@@ -224,6 +235,11 @@ export default function OrdersPage() {
       return;
     }
 
+    if (newOrder.vehicleId === null) {
+        setError("Выберите автомобиль");
+        return;
+    }
+
     if (!newOrder.preferredTime) {
       setError("Укажите время начала");
       return;
@@ -238,10 +254,12 @@ export default function OrdersPage() {
       const orderData = {
         customerId: newOrder.customerId!,
         serviceId: newOrder.serviceId!,
+        vehicleId: newOrder.vehicleId!,
         preferredTime: newOrder.preferredTime,
         duration: newOrder.duration,
         employeeId: newOrder.employeeId,
         status: newOrder.status,
+        priority: newOrder.priority
       };
 
       // Отправка запроса
@@ -272,7 +290,9 @@ export default function OrdersPage() {
         preferredTime: "",
         duration: null,
         employeeId: null,
+        vehicleId: null,
         status: "pending",
+        priority: "NORMAL"
       });
 
       setSuccess("Заказ успешно добавлен!");
@@ -477,6 +497,40 @@ export default function OrdersPage() {
                 <option value="in_progress">В работе</option>
                 <option value="completed">Выполнен</option>
                 <option value="cancelled">Отменен</option>
+              </select>
+            </div>
+
+            <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Приоритет
+                </label>
+                <select
+                    name="priority"
+                    value={newOrder.priority}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-300 text-600"
+                >
+                    <option value="NORMAL">Стандартный</option>
+                    <option value="URGENT">Срочный</option>
+                </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Автомобиль <span className="text-red-500">*</span>
+              </label>
+              <select
+                name="vehicleId"
+                value={newOrder.vehicleId ?? ""}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-300 text-600"
+                required
+              >
+                <option value="">Выберите автомобиль</option>
+                {vehicles.map((vehicle) => (
+                  <option key={vehicle.id} value={vehicle.id}>
+                    {vehicle.plateNumber} ({vehicle.model})
+                  </option>
+                ))}
               </select>
             </div>
 

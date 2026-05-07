@@ -31,8 +31,8 @@ interface Recommendation {
   id: string;
   orderId: string;
   resourceId: string;
-  start: number;
-  end: number;
+  startTime: Date;
+  endTime: Date;
   timeEfficiency: number;
 }
 
@@ -259,7 +259,7 @@ export default function ScheduleCalendar({
 
   // Загрузка рекомендаций от планировщика
   const fetchRecommendations = useCallback(async () => {
-    if (!token || viewMode !== "recommend") return; // ❌ Убрали проверку currentMasterId
+    if (!token || viewMode !== "recommend") return;
 
     setLoadingRecs(true);
     try {
@@ -272,27 +272,26 @@ export default function ScheduleCalendar({
       const rawRecommendations: Recommendation[] = await res.json();
       setRawRecommendations(rawRecommendations);
 
-      // Устанавливаем начало текущего дня в ЛОКАЛЬНОМ времени
-      const localStartOfDay = new Date();
-      localStartOfDay.setHours(0, 0, 0, 0); // Начало сегодняшнего дня (по Москве)
+      // ✅ ФИКС: Берем начало дня именно с выбранной даты
+      const baseDate = new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate(),
+      );
+      baseDate.setHours(0, 0, 0, 0); // Начало выбранного дня
 
       const recEvents: ScheduleEvent[] = rawRecommendations.map((rec) => {
-        // Создаём время как смещение от начала дня
-        const startTime = new Date(
-          localStartOfDay.getTime() + rec.start * 60 * 1000,
-        );
-        const endTime = new Date(
-          localStartOfDay.getTime() + rec.end * 60 * 1000,
-        );
-
         return {
           id: parseInt(rec.orderId),
           title: `Рекомендуется: работа #${rec.orderId}`,
-          start: startTime,
-          end: endTime,
+          start: new Date(rec.startTime), // ⬅️ Просто парсим ISO
+          end: new Date(rec.endTime),
           serviceName: "Рекомендация",
           customerName: "Система",
-          duration: rec.end - rec.start,
+          duration:
+            (new Date(rec.endTime).getTime() -
+              new Date(rec.startTime).getTime()) /
+            (1000 * 60),
           masterId: parseInt(rec.resourceId),
           masterName: getMasterName(parseInt(rec.resourceId)),
         };
@@ -304,7 +303,7 @@ export default function ScheduleCalendar({
     } finally {
       setLoadingRecs(false);
     }
-  }, [apiUrl, token, viewMode, getMasterName]);
+  }, [apiUrl, token, viewMode, date, getMasterName]);
 
   // Общий эффект
   useEffect(() => {
