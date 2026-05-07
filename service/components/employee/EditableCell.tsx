@@ -1,13 +1,17 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from "react";
 
 interface EditableCellProps {
   value: string;
   onChange: (value: string) => void;
-  type?: 'text' | 'dropdown';
+  type?: "text" | "dropdown";
   options?: string[];
 }
 
-export function EditableCell({ value, onChange, type = 'text', options = [] }: EditableCellProps) {
+export function EditableCell({
+  value,
+  onChange,
+  type = "text",
+}: EditableCellProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState(value);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -19,7 +23,7 @@ export function EditableCell({ value, onChange, type = 'text', options = [] }: E
 
   useEffect(() => {
     if (isEditing) {
-      if (type === 'dropdown' && selectRef.current) {
+      if (type === "dropdown" && selectRef.current) {
         selectRef.current.focus();
       } else if (inputRef.current) {
         inputRef.current.focus();
@@ -29,29 +33,30 @@ export function EditableCell({ value, onChange, type = 'text', options = [] }: E
   }, [isEditing, type]);
 
   const handleDoubleClick = () => setIsEditing(true);
-  
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => 
-    setEditValue(e.target.value);
-  
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => setEditValue(e.target.value);
+
   const handleSave = () => {
     if (editValue.trim() && editValue !== value) {
       onChange(editValue);
     }
     setIsEditing(false);
   };
-  
+
   const handleCancel = () => {
     setEditValue(value);
     setIsEditing(false);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') handleSave();
-    if (e.key === 'Escape') handleCancel();
+    if (e.key === "Enter") handleSave();
+    if (e.key === "Escape") handleCancel();
   };
 
   if (isEditing) {
-    if (type === 'dropdown' && options.length > 0) {
+    if (type === "dropdown") {
       return (
         <select
           ref={selectRef}
@@ -61,12 +66,16 @@ export function EditableCell({ value, onChange, type = 'text', options = [] }: E
           onKeyDown={handleKeyDown}
           className="w-full px-2 py-1 border border-yellow-400 rounded text-sm focus:outline-none focus:ring-2 focus:ring-yellow-500 bg-white"
         >
-          <option value="">Не выбрано</option>
-          {options.map((option) => (
-            <option key={option} value={option}>
-              {option}
-            </option>
-          ))}
+          <option value="" disabled hidden>
+            Выберите специализацию
+          </option>
+          <option value="electric">Электрика</option>
+          <option value="engine">Двигатель</option>
+          <option value="transmission">Трансмиссия</option>
+          <option value="body">Кузовной ремонт</option>
+          <option value="tire">Шиномонтаж</option>
+          <option value="mechanic">Слесарь</option>
+          <option value="universal">Универсальный мастер</option>
         </select>
       );
     }

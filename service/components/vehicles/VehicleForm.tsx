@@ -1,38 +1,52 @@
 // src/components/vehicles/VehicleForm.tsx
-import { useState } from 'react';
+import { useState } from "react";
 
 interface VehicleFormProps {
-  onSubmit: (data: { plateNumber: string; model: string; year: number }) => void;
+  onSubmit: (data: {
+    plateNumber: string;
+    model: string;
+    year: number;
+    status: string;
+  }) => void;
   onCancel: () => void;
 }
 
 export function VehicleForm({ onSubmit, onCancel }: VehicleFormProps) {
-  const [plateNumber, setPlateNumber] = useState('');
-  const [model, setModel] = useState('');
-  const [year, setYear] = useState('');
-  const [error, setError] = useState('');
+  const [plateNumber, setPlateNumber] = useState("");
+  const [model, setModel] = useState("");
+  const [year, setYear] = useState("");
+  const [status, setStatus] = useState("");
+  const [error, setError] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setError("");
 
-    if (!plateNumber || !model || !year) {
-      return setError('Все поля обязательны');
+    if (!plateNumber || !model || !year || !status) {
+      return setError("Все поля обязательны");
     }
 
     const parsedYear = parseInt(year, 10);
-    if (isNaN(parsedYear) || parsedYear < 1900 || parsedYear > new Date().getFullYear()) {
-      return setError('Некорректный год');
+    if (
+      isNaN(parsedYear) ||
+      parsedYear < 1900 ||
+      parsedYear > new Date().getFullYear()
+    ) {
+      return setError("Некорректный год");
     }
 
-    onSubmit({ plateNumber, model, year: parsedYear });
-    setPlateNumber('');
-    setModel('');
-    setYear('');
+    onSubmit({ plateNumber, model, year: parsedYear, status });
+    setPlateNumber("");
+    setModel("");
+    setYear("");
+    setStatus("");
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-gray-50 p-6 rounded-lg mb-6 space-y-4 text-gray-600">
+    <form
+      onSubmit={handleSubmit}
+      className="bg-gray-50 p-6 rounded-lg mb-6 space-y-4 text-gray-600"
+    >
       <h3 className="font-semibold">Новый автомобиль</h3>
       {error && <p className="text-red-600 text-sm">{error}</p>}
       <div>
@@ -66,8 +80,29 @@ export function VehicleForm({ onSubmit, onCancel }: VehicleFormProps) {
           max={new Date().getFullYear()}
         />
       </div>
+      <div>
+        <label className="block text-sm font-medium">Модель</label>
+        <select
+          name="status"
+          value={
+            status
+          }
+          onChange={(e) => setStatus(e.target.value)}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-300 text-600"
+        >
+          <option value="" disabled hidden>
+            Выберите статус
+          </option>
+          <option value="in_service">В эксплуатации</option>
+          <option value="in_repair">В ремонте</option>
+          <option value="out_of_order">Вышел из строя</option>
+        </select>
+      </div>
       <div className="flex space-x-3 pt-2">
-        <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+        <button
+          type="submit"
+          className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+        >
           Сохранить
         </button>
         <button

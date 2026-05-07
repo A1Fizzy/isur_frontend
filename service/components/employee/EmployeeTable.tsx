@@ -8,14 +8,28 @@ interface EmployeeTableProps {
 }
 
 const SPECIALIZATIONS = [
-  "Автоэлектрик",
-  "Моторист",
-  "Механик-диагност",
-  "Шиномонтажник",
-  "Автомаляр",
-  "Автожестянщик",
-  "Ходовик"
+  "electric",
+  "engine",
+  "transmissioc",
+  "body",
+  "tire",
+  "mechanic",
+  "universal"
 ];
+
+const formatSpecialization = (specialization: string): string => {
+    const map: Record<string, string> = {
+        electric: 'Электрика',
+        engine: 'Двигатель',
+        transmission: 'Трансмиссия',
+        body: 'Кузовной ремонт',
+        tire: 'Шиномонтаж',
+        mechanic: 'Слесарь',
+        universal: 'Универсальный мастер',
+    };
+
+    return map[specialization] || specialization;
+  };
 
 export function EmployeeTable({ employees, onEdit, isAdmin }: EmployeeTableProps) {
   if (!employees || employees.length === 0) {
@@ -47,13 +61,12 @@ export function EmployeeTable({ employees, onEdit, isAdmin }: EmployeeTableProps
               <td className="py-2 px-4 border-b">
                 {isAdmin ? (
                   <EditableCell
-                    value={emp.specialization}
+                    value={formatSpecialization(emp.specialization)}
                     onChange={(value) => onEdit(emp.id, 'specialization', value)}
                     type="dropdown"
-                    options={SPECIALIZATIONS}
                   />
                   ) : (
-                    <span>{emp.specialization}</span>
+                    <span>{formatSpecialization(emp.specialization)}</span>
                   )}
               </td>
             </tr>

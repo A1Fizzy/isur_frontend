@@ -8,6 +8,7 @@ interface Service {
   id: number;
   name: string;
   duration: number;
+  specialization: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -22,9 +23,11 @@ export default function ServicesPage() {
   const [newService, setNewService] = useState<{
     name: string;
     duration: number | "";
+    specialization: string;
   }>({
     name: "",
     duration: "",
+    specialization: "",
   });
 
   const [editingService, setEditingService] = useState<Service | null>(null);
@@ -88,7 +91,7 @@ export default function ServicesPage() {
   }, [user]);
 
   // Обработка изменения формы
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement |  HTMLSelectElement>) => {
     const { name, value } = e.target;
     if (editingService) {
       setEditingService((prev) =>
@@ -123,6 +126,11 @@ export default function ServicesPage() {
       return;
     }
 
+    if (!newService.specialization.trim()) {
+      setError("Специализация услуги обязательна");
+      return;
+    }
+
     if (
       newService.duration === "" ||
       newService.duration < 15 ||
@@ -147,6 +155,7 @@ export default function ServicesPage() {
         body: JSON.stringify({
           name: newService.name,
           duration: newService.duration,
+          specialization: newService.specialization,
         }),
       });
 
@@ -165,6 +174,7 @@ export default function ServicesPage() {
       setNewService({
         name: "",
         duration: "",
+        specialization: "",
       });
 
       setSuccess("Услуга успешно добавлена!");
@@ -205,6 +215,11 @@ export default function ServicesPage() {
       return;
     }
 
+    if (!editingService.specialization.trim()) {
+      setError("Специализация услуги обязательна");
+      return;
+    }
+
     if (editingService.duration < 15 || editingService.duration > 480) {
       setError("Длительность должна быть от 15 до 480 минут");
       return;
@@ -223,6 +238,7 @@ export default function ServicesPage() {
         body: JSON.stringify({
           name: editingService.name,
           duration: editingService.duration,
+          specialization: editingService.specialization
         }),
       });
 
@@ -292,6 +308,20 @@ export default function ServicesPage() {
     const hours = Math.floor(minutes / 60);
     const mins = minutes % 60;
     return hours > 0 ? `${hours}ч ${mins}мин` : `${mins}мин`;
+  };
+
+  const formatSpecialization = (specialization: string): string => {
+    const map: Record<string, string> = {
+        electric: 'Электрика',
+        engine: 'Двигатель',
+        transmission: 'Трансмиссия',
+        body: 'Кузовной ремонт',
+        tire: 'Шиномонтаж',
+        mechanic: 'Слесарь',
+        universal: 'Универсальный мастер',
+    };
+
+    return map[specialization] || specialization; // если нет в списке — вернёт исходное значение
   };
 
   // Обработка состояния загрузки
@@ -399,6 +429,29 @@ export default function ServicesPage() {
             />
           </div>
 
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+                Специализация <span className="text-red-500">*</span>
+            </label>
+            <select
+                name="specialization"
+                value={editingService ? editingService.specialization : newService.specialization}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-300 text-600"
+            >
+                <option value="" disabled hidden>
+                Выберите специализацию
+                </option>
+                <option value="electric">Электрика</option>
+                <option value="engine">Двигатель</option>
+                <option value="transmission">Трансмиссия</option>
+                <option value="body">Кузовной ремонт</option>
+                <option value="tire">Шиномонтаж</option>
+                <option value="mechanic">Слесарь</option>
+                <option value="universal">Универсальный мастер</option>
+            </select>
+            </div>
+
           <div className="md:col-span-2 flex justify-end space-x-4">
             {editingService ? (
               <>
@@ -479,7 +532,7 @@ export default function ServicesPage() {
                       {service.name}
                     </h3>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-600 mt-2">
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm text-gray-600 mt-2">
                       <div>
                         <span className="font-medium">Длительность:</span>{" "}
                         {formatDuration(service.duration)}
@@ -489,6 +542,10 @@ export default function ServicesPage() {
                         {new Date(service.createdAt).toLocaleDateString(
                           "ru-RU",
                         )}
+                      </div>
+                      <div>
+                        <span className="font-medium">Специальность:</span>{" "}
+                        {formatSpecialization(service.specialization)}
                       </div>
                     </div>
                   </div>

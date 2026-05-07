@@ -31,8 +31,8 @@ interface Recommendation {
   id: string;
   orderId: string;
   resourceId: string;
-  startTime: Date;
-  endTime: Date;
+  start: Date;
+  end: Date;
   timeEfficiency: number;
 }
 
@@ -60,6 +60,20 @@ const locales = {
   ru: ru,
 };
 
+const formatSpecialization = (specialization: string): string => {
+    const map: Record<string, string> = {
+        electric: 'Электрика',
+        engine: 'Двигатель',
+        transmission: 'Трансмиссия',
+        body: 'Кузовной ремонт',
+        tire: 'Шиномонтаж',
+        mechanic: 'Слесарь',
+        universal: 'Универсальный мастер',
+    };
+
+    return map[specialization] || specialization; // если нет в списке — вернёт исходное значение
+  };
+
 const localizer = dateFnsLocalizer({
   format,
   parse,
@@ -72,8 +86,11 @@ const localizer = dateFnsLocalizer({
 const CustomEvent = ({ event }: { event: ScheduleEvent }) => {
   return (
     <div className="p-1 text-xs leading-tight h-full overflow-hidden">
-      <div className="font-semibold truncate mb-0.5">{event.serviceName}</div>
-      <div className="flex flex-col gap-0.5">
+      {/* <div className="font-semibold truncate mb-0.5">{event.serviceName}</div> */}
+      {/* <div className="flex flex-col gap-0.5">
+        <div className="text-white/90 text-[10px] leading-none truncate">
+          {event.serviceName}
+        </div>
         <div className="text-white/90 text-[10px] leading-none truncate">
           {event.customerName}
         </div>
@@ -83,7 +100,7 @@ const CustomEvent = ({ event }: { event: ScheduleEvent }) => {
             {event.masterName}
           </div>
         )}
-      </div>
+      </div> */}
     </div>
   );
 };
@@ -272,7 +289,6 @@ export default function ScheduleCalendar({
       const rawRecommendations: Recommendation[] = await res.json();
       setRawRecommendations(rawRecommendations);
 
-      // ✅ ФИКС: Берем начало дня именно с выбранной даты
       const baseDate = new Date(
         date.getFullYear(),
         date.getMonth(),
@@ -284,13 +300,13 @@ export default function ScheduleCalendar({
         return {
           id: parseInt(rec.orderId),
           title: `Рекомендуется: работа #${rec.orderId}`,
-          start: new Date(rec.startTime), // ⬅️ Просто парсим ISO
-          end: new Date(rec.endTime),
+          start: new Date(rec.start),
+          end: new Date(rec.end),
           serviceName: "Рекомендация",
           customerName: "Система",
           duration:
-            (new Date(rec.endTime).getTime() -
-              new Date(rec.startTime).getTime()) /
+            (new Date(rec.end).getTime() -
+              new Date(rec.start).getTime()) /
             (1000 * 60),
           masterId: parseInt(rec.resourceId),
           masterName: getMasterName(parseInt(rec.resourceId)),
@@ -472,7 +488,7 @@ export default function ScheduleCalendar({
             onClick={() => setViewMode("actual")}
             className={`px-3 py-1 text-sm rounded ${
               viewMode === "actual"
-                ? "bg-blue-600 text-white"
+                ? "bg-yellow-600 text-white"
                 : "bg-gray-200 text-gray-700 hover:bg-gray-300"
             }`}
           >
@@ -586,7 +602,7 @@ export default function ScheduleCalendar({
                     <option value="">Не назначен</option>
                     {masters.map((master) => (
                       <option key={master.id} value={master.id}>
-                        {master.name} ({master.specialization})
+                        {master.name} ({formatSpecialization(master.specialization)})
                       </option>
                     ))}
                   </select>

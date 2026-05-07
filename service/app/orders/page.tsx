@@ -9,13 +9,14 @@ interface Order {
   id: number;
   customerId: number;
   serviceId: number;
+  vehicleId: number;
   preferredTime: string;
   duration: number;
   status: "pending" | "in_progress" | "completed" | "cancelled";
   employeeId?: number | null;
-  // Добавляем поля для отображения
   customerName?: string;
   serviceName?: string;
+  vehicleName?: string;
   employeeName?: string;
 }
 
@@ -584,6 +585,7 @@ export default function OrdersPage() {
           <div className="divide-y divide-gray-200">
             {filteredOrders.map((order) => {
               // Найти соответствующие данные для отображения
+              const vehicle = vehicles.find((v) => v.id === order.vehicleId);
               const customer = customers.find((c) => c.id === order.customerId);
               const service = services.find((s) => s.id === order.serviceId);
               const employee = order.employeeId
@@ -605,7 +607,7 @@ export default function OrdersPage() {
                         {renderStatusBadge(order.status)}
                       </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600">
+                      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm text-gray-600">
                         <div>
                           <span className="font-medium">Клиент:</span>{" "}
                           {customer?.name || "Не указан"}
@@ -625,6 +627,10 @@ export default function OrdersPage() {
                         <div>
                           <span className="font-medium">Мастер:</span>{" "}
                           {employee?.name || "Не назначен"}
+                        </div>
+                        <div>
+                          <span className="font-medium">Автомобиль:</span>{" "}
+                          {vehicle?.plateNumber || "Не назначен"}
                         </div>
                       </div>
                     </div>
