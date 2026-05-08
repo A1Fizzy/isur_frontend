@@ -68,7 +68,7 @@ export default function OrdersPage() {
     employeeId: null,
     vehicleId: null,
     status: "pending",
-    priority: "NORMAL"
+    priority: "NORMAL",
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -113,27 +113,37 @@ export default function OrdersPage() {
 
     setIsDataLoading(true);
     try {
-      const [customersRes, servicesRes, employeesRes, vehiclesRes] = await Promise.all([
-        fetch(`${apiUrl}/customers`, {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        }),
-        fetch(`${apiUrl}/services`, {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        }),
-        fetch(`${apiUrl}/employees`, {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        }),
-        fetch(`${apiUrl}/vehicles`, {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        }),
-      ]);
+      const [customersRes, servicesRes, employeesRes, vehiclesRes] =
+        await Promise.all([
+          fetch(`${apiUrl}/customers`, {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }),
+          fetch(`${apiUrl}/services`, {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }),
+          fetch(`${apiUrl}/employees`, {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }),
+          fetch(`${apiUrl}/vehicles`, {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }),
+        ]);
 
-      const [customersData, servicesData, employeesData, vehiclesData] = await Promise.all([
-        customersRes.json(),
-        servicesRes.json(),
-        employeesRes.json(),
-        vehiclesRes.json(),
-      ]);
+      const [customersData, servicesData, employeesData, vehiclesData] =
+        await Promise.all([
+          customersRes.json(),
+          servicesRes.json(),
+          employeesRes.json(),
+          vehiclesRes.json(),
+        ]);
 
       setCustomers(customersData);
       setServices(servicesData);
@@ -237,8 +247,8 @@ export default function OrdersPage() {
     }
 
     if (newOrder.vehicleId === null) {
-        setError("Выберите автомобиль");
-        return;
+      setError("Выберите автомобиль");
+      return;
     }
 
     if (!newOrder.preferredTime) {
@@ -260,7 +270,7 @@ export default function OrdersPage() {
         duration: newOrder.duration,
         employeeId: newOrder.employeeId,
         status: newOrder.status,
-        priority: newOrder.priority
+        priority: newOrder.priority,
       };
 
       // Отправка запроса
@@ -293,7 +303,7 @@ export default function OrdersPage() {
         employeeId: null,
         vehicleId: null,
         status: "pending",
-        priority: "NORMAL"
+        priority: "NORMAL",
       });
 
       setSuccess("Заказ успешно добавлен!");
@@ -502,18 +512,18 @@ export default function OrdersPage() {
             </div>
 
             <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Приоритет
-                </label>
-                <select
-                    name="priority"
-                    value={newOrder.priority}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-300 text-600"
-                >
-                    <option value="NORMAL">Стандартный</option>
-                    <option value="URGENT">Срочный</option>
-                </select>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Приоритет
+              </label>
+              <select
+                name="priority"
+                value={newOrder.priority}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-300 text-600"
+              >
+                <option value="NORMAL">Стандартный</option>
+                <option value="URGENT">Срочный</option>
+              </select>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -527,12 +537,20 @@ export default function OrdersPage() {
                 required
               >
                 <option value="">Выберите автомобиль</option>
-                {vehicles.map((vehicle) => (
-                  <option key={vehicle.id} value={vehicle.id}>
-                    {vehicle.plateNumber} ({vehicle.model})
-                  </option>
-                ))}
+                {vehicles
+                  .filter((v) => v.status === "out_of_order" || v.status === "in_repair")
+                  .map((vehicle) => (
+                    <option key={vehicle.id} value={vehicle.id}>
+                      {vehicle.plateNumber} ({vehicle.model})
+                    </option>
+                  ))}
               </select>
+              {vehicles.filter((v) => v.status === "out_of_order").length ===
+                0 && (
+                <p className="text-xs text-gray-500 mt-1">
+                  Нет автомобилей со статусом «Вышел из строя» или «В ремонте»
+                </p>
+              )}
             </div>
 
             <div className="md:col-span-2">
@@ -553,19 +571,19 @@ export default function OrdersPage() {
         <div className="flex justify-between px-6 py-4 border-b border-gray-200">
           <h2 className="text-xl font-semibold">Список заказов</h2>
           {/* Фильтры */}
-            <div className="flex space-x-4">
+          <div className="flex space-x-4">
             <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-300 text-gray-600"
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-300 text-gray-600"
             >
-                <option value="all">Все статусы</option>
-                <option value="pending">Ожидание</option>
-                <option value="in_progress">В работе</option>
-                <option value="completed">Выполнен</option>
-                <option value="cancelled">Отменен</option>
+              <option value="all">Все статусы</option>
+              <option value="pending">Ожидание</option>
+              <option value="in_progress">В работе</option>
+              <option value="completed">Выполнен</option>
+              <option value="cancelled">Отменен</option>
             </select>
-            </div>
+          </div>
         </div>
 
         {isLoading ? (
