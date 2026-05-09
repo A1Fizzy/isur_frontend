@@ -87,8 +87,8 @@ const localizer = dateFnsLocalizer({
 const CustomEvent = ({ event }: { event: ScheduleEvent }) => {
   return (
     <div className="p-1 text-xs leading-tight h-full overflow-hidden">
-      {/* <div className="font-semibold truncate mb-0.5">{event.serviceName}</div> */}
-      {/* <div className="flex flex-col gap-0.5">
+      <div className="font-semibold truncate mb-0.5">{event.serviceName}</div>
+      <div className="flex flex-col gap-0.5">
         <div className="text-white/90 text-[10px] leading-none truncate">
           {event.serviceName}
         </div>
@@ -101,7 +101,7 @@ const CustomEvent = ({ event }: { event: ScheduleEvent }) => {
             {event.masterName}
           </div>
         )}
-      </div> */}
+      </div>
     </div>
   );
 };
