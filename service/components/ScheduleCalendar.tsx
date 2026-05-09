@@ -25,6 +25,7 @@ interface ScheduleEvent {
   masterId?: number;
   duration: number;
   masterName?: string;
+  status?: string;
 }
 
 interface Recommendation {
@@ -61,18 +62,18 @@ const locales = {
 };
 
 const formatSpecialization = (specialization: string): string => {
-    const map: Record<string, string> = {
-        electric: 'Электрика',
-        engine: 'Двигатель',
-        transmission: 'Трансмиссия',
-        body: 'Кузовной ремонт',
-        tire: 'Шиномонтаж',
-        mechanic: 'Слесарь',
-        universal: 'Универсальный мастер',
-    };
-
-    return map[specialization] || specialization; // если нет в списке — вернёт исходное значение
+  const map: Record<string, string> = {
+    electric: "Электрика",
+    engine: "Двигатель",
+    transmission: "Трансмиссия",
+    body: "Кузовной ремонт",
+    tire: "Шиномонтаж",
+    mechanic: "Слесарь",
+    universal: "Универсальный мастер",
   };
+
+  return map[specialization] || specialization; // если нет в списке — вернёт исходное значение
+};
 
 const localizer = dateFnsLocalizer({
   format,
@@ -136,7 +137,10 @@ export default function ScheduleCalendar({
   const [rawRecommendations, setRawRecommendations] = useState<
     Recommendation[]
   >([]);
-
+  const [completingOrder, setCompletingOrder] = useState<ScheduleEvent | null>(
+    null,
+  );
+  const [isCompleting, setIsCompleting] = useState(false);
   // Состояния для формы редактирования
   const [editForm, setEditForm] = useState({
     startTime: "",
@@ -305,8 +309,7 @@ export default function ScheduleCalendar({
           serviceName: "Рекомендация",
           customerName: "Система",
           duration:
-            (new Date(rec.end).getTime() -
-              new Date(rec.start).getTime()) /
+            (new Date(rec.end).getTime() - new Date(rec.start).getTime()) /
             (1000 * 60),
           masterId: parseInt(rec.resourceId),
           masterName: getMasterName(parseInt(rec.resourceId)),
@@ -349,6 +352,9 @@ export default function ScheduleCalendar({
       });
       setIsModalOpen(true);
       setFormError("");
+    }
+    if (role === "master") {
+      setCompletingOrder(event);
     }
   };
 
@@ -404,6 +410,36 @@ export default function ScheduleCalendar({
   const handleReject = () => {
     alert("Рекомендации отклонены");
     setViewMode("actual");
+  };
+
+  const handleCompleteOrder = async () => {
+    if (!completingOrder || !token) return;
+
+    setIsCompleting(true);
+    try {
+      const res = await fetch(
+        `${apiUrl}/orders/${completingOrder.id}/complete`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      if (!res.ok) throw new Error("Ошибка сервера");
+
+      // Обновляем расписание
+      if (viewMode === "actual") fetchSchedule();
+
+      setCompletingOrder(null);
+      alert("Заказ завершен!");
+    } catch (err) {
+      alert(" Не удалось завершить заказ");
+    } finally {
+      setIsCompleting(false);
+    }
   };
 
   // Сохранение изменений события
@@ -602,7 +638,8 @@ export default function ScheduleCalendar({
                     <option value="">Не назначен</option>
                     {masters.map((master) => (
                       <option key={master.id} value={master.id}>
-                        {master.name} ({formatSpecialization(master.specialization)})
+                        {master.name} (
+                        {formatSpecialization(master.specialization)})
                       </option>
                     ))}
                   </select>
@@ -747,6 +784,34 @@ export default function ScheduleCalendar({
             </div>
           )}
         </>
+      )}
+      {completingOrder && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
+            <h3 className="text-lg font-semibold mb-2">Завершить заказ?</h3>
+            <p className="text-sm text-gray-600 mb-4">
+              Заказ: <strong>{completingOrder.serviceName}</strong>
+              <br />
+              Авто: <strong>{completingOrder.customerName}</strong>
+            </p>
+
+            <div className="flex gap-3">
+              <button
+                onClick={handleCompleteOrder}
+                disabled={isCompleting}
+                className="flex-1 bg-green-600 text-white py-2 rounded hover:bg-green-700 disabled:opacity-50"
+              >
+                {isCompleting ? "Завершение..." : "Завершить заказ"}
+              </button>
+              <button
+                onClick={() => setCompletingOrder(null)}
+                className="flex-1 bg-gray-300 text-gray-700 py-2 rounded hover:bg-gray-400"
+              >
+                Отмена
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
