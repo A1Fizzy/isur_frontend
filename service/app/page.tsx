@@ -43,12 +43,6 @@ export default function Home() {
               >
                 Войти
               </button>
-              <button
-                onClick={() => router.push('/register')}
-                className="bg-yellow-300 hover:bg-gray-100 text-gray-600 text-lg px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 font-medium"
-              >
-                Зарегистрироваться
-              </button>
             </div>
           ) : (
             <button

@@ -129,16 +129,6 @@ export default function LoginPage() {
             </button>
           </div>
         </form>
-
-        {/* Ссылка на регистрацию */}
-        <div className="text-center">
-          <p className="text-gray-600 text-sm">
-            Нет аккаунта?{' '}
-            <a href="/register" className="font-bold text-gray-600 hover:text-gray-600 hover:underline transition">
-              Зарегистрироваться
-            </a>
-          </p>
-        </div>
       </div>
     </div>
   );
