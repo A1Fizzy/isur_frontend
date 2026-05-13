@@ -13,6 +13,7 @@ import {
 } from "date-fns";
 import { ru } from "date-fns/locale";
 import { useState, useCallback, useEffect } from "react";
+import { CalendarDays, CircleQuestionMark } from "lucide-react";
 
 // Типы
 interface ScheduleEvent {
@@ -41,7 +42,7 @@ interface ScheduleCalendarProps {
   role: string;
   apiUrl: string;
   token: string | null;
-  currentMasterId?: number; // ID текущего мастера (для роли master)
+  currentMasterId?: number;
 }
 
 interface Master {
@@ -89,9 +90,6 @@ const CustomEvent = ({ event }: { event: ScheduleEvent }) => {
     <div className="p-1 text-xs leading-tight h-full overflow-hidden">
       <div className="font-semibold truncate mb-0.5">{event.serviceName}</div>
       <div className="flex flex-col gap-0.5">
-        <div className="text-white/90 text-[10px] leading-none truncate">
-          {event.serviceName}
-        </div>
         <div className="text-white/90 text-[10px] leading-none truncate">
           {event.customerName}
         </div>
@@ -381,7 +379,6 @@ export default function ScheduleCalendar({
 
   const handleApplyAll = async () => {
     try {
-      console.log("📤 Отправляем на применение:", rawRecommendations); // 🔥 Для проверки
 
       const result = await fetch(`${apiUrl}/schedule/apply-recommendations`, {
         method: "POST",
@@ -389,7 +386,7 @@ export default function ScheduleCalendar({
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ recommendations: rawRecommendations }), // ✅ Оригинал!
+        body: JSON.stringify({ recommendations: rawRecommendations }), 
       });
 
       if (!result.ok) {
@@ -528,7 +525,11 @@ export default function ScheduleCalendar({
                 : "bg-gray-200 text-gray-700 hover:bg-gray-300"
             }`}
           >
-            📅 Текущие работы
+            <div className="flex flex-row">
+              <CalendarDays  className="w-4 h-4 mr-2"/> 
+              <p>Текущие работы</p>
+            </div>
+            
           </button>
           <button
             onClick={() => {
@@ -541,7 +542,10 @@ export default function ScheduleCalendar({
                 : "bg-gray-200 text-gray-700 hover:bg-gray-300"
             }`}
           >
-            💡 Рекомендации
+            <div className="flex flex-row">
+              <CircleQuestionMark className="w-4 h-4 mr-2"/> 
+              <p>Рекомендации</p>
+            </div>
           </button>
         </div>
       )}

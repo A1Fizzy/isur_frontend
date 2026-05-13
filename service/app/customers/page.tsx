@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth";
 import Loader from "@/components/Loader";
+import { Users } from "lucide-react";
 
 interface Customer {
   id: number;
@@ -297,10 +298,9 @@ export default function CustomersPage() {
   if (user && user.role !== "admin") {
     return (
       <div className="min-h-screen bg-gray-100 p-5">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold text-gray-600">
-            Управление клиентами
-          </h1>
+        <div className="flex flex-col md:flex-row md:items-center gap-4 bg-white/95 backdrop-blur-sm p-6 rounded-xl shadow mb-2">
+            <Users className="w-8 h-8 text-yellow-500"/>
+            <h1 className="text-2xl font-bold text-gray-600">Учёт клиентов</h1>
         </div>
 
         <div className="bg-yellow-50 border border-yellow-200 text-gray-600 px-4 py-3 rounded mt-4 mx-5">
@@ -315,14 +315,13 @@ export default function CustomersPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-bold text-gray-800">
-          Управление клиентами
-        </h1>
-      </div>
+      <div className="flex flex-col md:flex-row md:items-center gap-4 bg-white/95 backdrop-blur-sm p-6 rounded-xl shadow mb-2">
+            <Users className="w-8 h-8 text-yellow-500"/>
+            <h1 className="text-2xl font-bold text-gray-600">Учёт клиентов</h1>
+        </div>
 
       {/* Форма добавления клиента */}
-      <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+      <div className="bg-white rounded-lg shadow-md p-6 mb-2 text-gray-600">
         <h2 className="text-xl font-semibold mb-4">
           {editingCustomer
             ? "Редактирование клиента"
@@ -435,7 +434,7 @@ export default function CustomersPage() {
       </div>
 
       {/* Список клиентов */}
-      <div className="bg-white rounded-lg shadow-md overflow-hidden">
+      <div className="bg-white rounded-lg shadow-md overflow-hidden text-gray-600">
         <div className="flex justify-between px-6 py-4 border-b border-gray-200">
           <h2 className="text-xl font-semibold">Список клиентов</h2>
           {/* Поиск */}

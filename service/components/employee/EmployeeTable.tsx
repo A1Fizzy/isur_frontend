@@ -96,18 +96,18 @@ export function EmployeeTable({ employees, onEdit, onDelete, isAdmin }: Employee
           </div>
         )}
       </div>
-      <table className="w-full bg-white border border-gray-300 rounded-lg text-gray-600">
-        <thead className="bg-gray-300">
+      <table className="w-full text-left border-collapse text-gray-600">
+        <thead className="bg-gray-50 text-gray-600 text-sm">
           <tr>
-            <th className="py-2 px-4 border-b">Имя</th>
-            <th className="py-2 px-4 border-b">Специализация</th>
-            {isAdmin && <th className="py-2 px-4 border-b">Действия</th>}
+            <th className="p-4 font-medium border-b">Имя</th>
+            <th className="p-4 font-medium border-b">Специализация</th>
+            {isAdmin && <th className="p-4 font-medium border-b text-right">Действия</th>}
           </tr>
         </thead>
-        <tbody>
+        <tbody className="divide-y divide-gray-100 text-gray-600">
           {filteredEmployees.map((emp: Employee) => (
-            <tr key={emp.id} className="hover:bg-gray-50">
-              <td className="py-2 px-4 border-b">
+            <tr key={emp.id} className="hover:bg-gray-50/50 transition-colors">
+              <td className="p-4 font-medium text-gray-800">
                 {isAdmin ? (
                   <EditableCell
                     value={emp.name}
@@ -117,7 +117,7 @@ export function EmployeeTable({ employees, onEdit, onDelete, isAdmin }: Employee
                     <span>{emp.name}</span>
                   )}
               </td>
-              <td className="py-2 px-4 border-b">
+              <td className="p-4 font-medium text-gray-800">
                 {isAdmin ? (
                   <EditableCell
                     value={formatSpecialization(emp.specialization)}
@@ -129,7 +129,7 @@ export function EmployeeTable({ employees, onEdit, onDelete, isAdmin }: Employee
                   )}
               </td>
               {isAdmin && (
-                <td className="py-2 px-4 border-b text-center">
+                <td className="p-4 font-medium text-gray-800 text-right">
                   <button
                     onClick={() => {
                       if (confirm(`Вы уверены, что хотите удалить мастера "${emp.name}"?`)) {

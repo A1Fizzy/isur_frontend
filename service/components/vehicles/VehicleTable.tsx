@@ -68,20 +68,20 @@ export function VehicleTable({ vehicles, onEdit, isAdmin }: VehicleTableProps) {
         </div>
       )}
 
-      <table className="w-full bg-white border border-gray-300 rounded-lg text-gray-600">
-        <thead className="bg-gray-300">
-          <tr className="grid grid-cols-4">
-            <th className="py-2 px-4 border-b flex items-center justify-center">
+      <table className="w-full text-left border-collapse">
+        <thead className="bg-gray-50 text-gray-600 text-sm">
+          <tr>
+            <th className="p-4 font-medium border-b">
               Госномер
             </th>
-            <th className="py-2 px-4 border-b flex items-center justify-center">
+            <th className="p-4 font-medium border-b">
               Модель
             </th>
-            <th className="py-2 px-4 border-b flex items-center justify-center">
+            <th className="p-4 font-medium border-b">
               Год
             </th>
-            <th className="py-2 px-4 border-b flex items-center justify-center">
-              <div className="flex flex-row items-center">
+            <th className="p-4 font-medium border-b text-right">
+              <div className="flex flex-row justify-end items-center">
                 <span className="mr-2">Статус</span>
                 <select
                   value={statusFilter}
@@ -97,9 +97,9 @@ export function VehicleTable({ vehicles, onEdit, isAdmin }: VehicleTableProps) {
             </th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className="divide-y divide-gray-100">
           {filteredVehicles.length === 0 ? (
-            <tr className="grid grid-cols-4">
+            <tr>
               <td
                 colSpan={4}
                 className="py-4 px-4 text-center text-gray-500 col-span-4"
@@ -111,8 +111,8 @@ export function VehicleTable({ vehicles, onEdit, isAdmin }: VehicleTableProps) {
             </tr>
           ) : (
             filteredVehicles.map((v) => (
-              <tr key={v.id} className="grid grid-cols-4 hover:bg-gray-50">
-                <td className="py-2 px-4 border-b flex items-center justify-center">
+              <tr key={v.id} className="hover:bg-gray-50/50 transition-colors">
+                <td className="p-4 font-medium text-gray-800">
                   {isAdmin ? (
                     <EditableCell
                       value={v.plateNumber}
@@ -122,7 +122,7 @@ export function VehicleTable({ vehicles, onEdit, isAdmin }: VehicleTableProps) {
                     <span className="font-bold">{v.plateNumber}</span>
                   )}
                 </td>
-                <td className="py-2 px-4 border-b flex items-center justify-center">
+                <td className="p-4 text-gray-600 font-mono">
                   {isAdmin ? (
                     <EditableCell
                       value={v.model}
@@ -132,7 +132,7 @@ export function VehicleTable({ vehicles, onEdit, isAdmin }: VehicleTableProps) {
                     <span>{v.model}</span>
                   )}
                 </td>
-                <td className="py-2 px-4 border-b flex items-center justify-center">
+                <td className="p-4 text-gray-500 text-sm">
                   {isAdmin ? (
                     <EditableCell
                       value={v.year}
@@ -143,7 +143,7 @@ export function VehicleTable({ vehicles, onEdit, isAdmin }: VehicleTableProps) {
                     <span>{v.year}</span>
                   )}
                 </td>
-                <td className="py-2 px-4 border-b flex items-center justify-center">
+                <td className="p-4 text-gray-600 text-right">
                   {isAdmin ? (
                     <select
                       value={v.status}

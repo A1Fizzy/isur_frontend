@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth";
 import Loader from "@/components/Loader";
 import { Vehicle } from "@/lib/schema";
+import { ListOrdered } from "lucide-react";
 
 interface Order {
   id: number;
@@ -408,14 +409,13 @@ export default function OrdersPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-bold text-gray-800">
-          Управление заказами
-        </h1>
+      <div className="flex flex-col md:flex-row md:items-center gap-4 bg-white/95 backdrop-blur-sm p-6 rounded-xl shadow mb-2">
+        <ListOrdered className="w-8 h-8 text-yellow-500"/>
+        <h1 className="text-2xl font-bold text-gray-600">Учёт заказов</h1>
       </div>
 
       {/* Форма добавления заказа */}
-      <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+      <div className="bg-white rounded-lg shadow-md p-6 mb-8 text-gray-600">
         <h2 className="text-xl font-semibold mb-4">Добавить новый заказ</h2>
 
         {error && (
@@ -567,7 +567,7 @@ export default function OrdersPage() {
       </div>
 
       {/* Список заказов */}
-      <div className="bg-white rounded-lg shadow-md overflow-hidden">
+      <div className="bg-white rounded-lg shadow-md overflow-hidden text-gray-600">
         <div className="flex justify-between px-6 py-4 border-b border-gray-200">
           <h2 className="text-xl font-semibold">Список заказов</h2>
           {/* Фильтры */}

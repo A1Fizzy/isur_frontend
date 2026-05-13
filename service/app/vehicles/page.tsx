@@ -9,6 +9,7 @@ import { vehicleApi } from '@/lib/apiClient';
 import { VehicleForm } from '@/components/vehicles/VehicleForm';
 import { VehicleTable } from '@/components/vehicles/VehicleTable';
 import Loader from '@/components/Loader';
+import { Car } from 'lucide-react';
 
 export default function VehiclesPage() {
   const { user } = useAuth();
@@ -88,11 +89,14 @@ export default function VehiclesPage() {
 
   return (
     <div className="min-h-screen bg-gray-100 p-5">
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex flex-col md:flex-row md:items-center gap-4 bg-white/95 backdrop-blur-sm p-6 rounded-xl shadow mb-2">
+        <Car className="w-8 h-8 text-yellow-500"/>
         <h1 className="text-2xl font-bold text-gray-600">Учёт автомобилей</h1>
         {isAdmin && (
-          <div className="text-sm text-green-600 bg-green-50 px-3 py-1 rounded-full">
-            Режим администратора
+          <div className="flex justify-end w-3/4 px-3 py-1 rounded-full">
+            <div className="text-end text-sm text-green-600 bg-green-50 px-3 py-1 rounded-full ">
+              Режим администратора
+            </div>
           </div>
         )}
       </div>
@@ -103,10 +107,11 @@ export default function VehiclesPage() {
         </div>
       )}
 
+      <div className="gap-4 bg-white/95 backdrop-blur-sm p-6 rounded-xl shadow mb-2">
       {isAdmin && (
         <button
           onClick={() => setShowForm(!showForm)}
-          className="mb-6 hover:bg-yellow-300 hover:text-gray-600 text-gray-100 px-4 py-2 rounded bg-gray-600 transition-all ease-in-out"
+          className="hover:bg-yellow-300 hover:text-gray-600 text-gray-100 px-4 py-2 rounded bg-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-300 transition-all ease-in-out"
         >
           {showForm ? 'Отмена' : 'Добавить автомобиль'}
         </button>
@@ -115,15 +120,18 @@ export default function VehiclesPage() {
       {showForm && isAdmin && (
         <VehicleForm onSubmit={handleCreate} onCancel={() => setShowForm(false)} />
       )}
+      </div>
 
       {loading ? (
         <Loader/>
       ) : (
-        <VehicleTable 
-          vehicles={vehicles} 
-          onEdit={handleEdit}
-          isAdmin={isAdmin}
-        />
+        <div className="gap-4 bg-white/95 backdrop-blur-sm p-6 rounded-xl shadow mb-2">
+          <VehicleTable 
+            vehicles={vehicles} 
+            onEdit={handleEdit}
+            isAdmin={isAdmin}
+          />
+        </div>
       )}
 
       {!isAdmin && (

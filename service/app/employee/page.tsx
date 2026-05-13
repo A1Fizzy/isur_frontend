@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth";
 import { EmployeeTable } from "@/components/employee/EmployeeTable";
 import Loader from "@/components/Loader";
+import { Wrench } from "lucide-react";
 
 interface Employee {
   id: number;
@@ -165,11 +166,14 @@ export default function EmployeesPage() {
 
   return (
     <div className="min-h-screen bg-gray-100 p-5">
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex flex-col md:flex-row md:items-center gap-4 bg-white/95 backdrop-blur-sm p-6 rounded-xl shadow mb-2">
+        <Wrench className="w-8 h-8 text-yellow-500"/>
         <h1 className="text-2xl font-bold text-gray-600">Учёт мастеров</h1>
         {isAdmin && (
-          <div className="text-sm text-green-600 bg-green-50 px-3 py-1 rounded-full">
-            Режим администратора
+          <div className="flex justify-end w-3/4 px-3 py-1 rounded-full">
+            <div className="text-end text-sm text-green-600 bg-green-50 px-3 py-1 rounded-full ">
+              Режим администратора
+            </div>
           </div>
         )}
       </div>
@@ -180,7 +184,7 @@ export default function EmployeesPage() {
       )}
 
       {isAdmin && (
-        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+        <div className="bg-white rounded-lg shadow-md p-6 mb-2 text-gray-600">
           <h2 className="text-xl font-semibold mb-4">Создать пользователя</h2>
 
           {userFormError && (
@@ -249,12 +253,14 @@ export default function EmployeesPage() {
       {loading ? (
         <Loader />
       ) : (
-        <EmployeeTable
-          employees={employees}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-          isAdmin={isAdmin}
-        />
+        <div className="gap-4 bg-white/95 backdrop-blur-sm p-6 rounded-xl shadow mb-2">
+          <EmployeeTable
+            employees={employees}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            isAdmin={isAdmin}
+          />
+        </div>
       )}
       {!isAdmin && (
         <div className="bg-yellow-50 border border-yellow-200 text-gray-600 px-4 py-3 rounded mt-4">

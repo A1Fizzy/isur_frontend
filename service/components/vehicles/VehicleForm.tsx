@@ -45,7 +45,7 @@ export function VehicleForm({ onSubmit, onCancel }: VehicleFormProps) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-gray-50 p-6 rounded-lg mb-6 space-y-4 text-gray-600"
+      className="bg-gray-50 p-6 rounded-lg mb-6 space-y-4 text-gray-600 shadow-md mt-6"
     >
       <h3 className="font-semibold">Новый автомобиль</h3>
       {error && <p className="text-red-600 text-sm">{error}</p>}
