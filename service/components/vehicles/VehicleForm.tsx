@@ -81,7 +81,7 @@ export function VehicleForm({ onSubmit, onCancel }: VehicleFormProps) {
         />
       </div>
       <div>
-        <label className="block text-sm font-medium">Модель</label>
+        <label className="block text-sm font-medium">Статус</label>
         <select
           name="status"
           value={

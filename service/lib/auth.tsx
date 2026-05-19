@@ -39,7 +39,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       body: JSON.stringify({ email, password }),
     });
 
-    if (!res.ok) throw new Error('Неверные данные');
+    if (!res.ok) throw new Error('Неверный email или пароль');
 
     const data = await res.json();
     localStorage.setItem('token', data.token);
