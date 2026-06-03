@@ -1,6 +1,5 @@
 @import "tailwindcss";
 @plugin "daisyui";
-/* @import 'react-big-calendar/lib/css/react-big-calendar.css'; */
 
 :root {
   --background: #ffffff;
@@ -28,11 +27,32 @@ body {
 }
 
 .rbc-month-view .rbc-row-content {
+  flex: 1;
+  height: auto;
   min-height: 100px !important;
+}
+
+.rbc-month-row {
+  display: flex;
+  flex-direction: column;
+  height: auto !important; /* Ключевое: высота подстраивается под контент */
+  min-height: 80px; /* Минимальная высота для пустых недель */
+  flex: 1; /* Если есть свободное место, ряды равномерно его заполнят */
+  overflow: visible;
 }
 
 .rbc-month-view .rbc-row-content .rbc-row {
   flex-wrap: wrap !important;
+}
+
+.rbc-day-slot.rbc-time-column {
+  display: flex;
+}
+
+.rbc-events-container{
+  margin: 0px !important;
+  display: flex;
+  flex-direction: row;
 }
 
 .rbc-month-view .rbc-event {
@@ -45,7 +65,8 @@ body {
   min-height: 100px !important;
 }
 .rbc-month-view {
-  height: 100% !important;
+  height: auto !important;
+  min-height: 600px;
 }
 
 .rbc-date-cell {
@@ -61,20 +82,42 @@ body {
 
 .rbc-day-bg {
   flex: 1 !important;
-  min-height: 120px !important;
+  min-height: 200px !important;
+  height: auto !important;
+  box-sizing: inherit;
 }
 
 .rbc-row-content {
   flex: 1 !important;
-  min-height: 0 !important;
+  height: auto !important;
+  min-height: 50px;
+}
+
+.rbc-row-segment {
+  padding: 0 2px !important;
 }
 
 .rbc-event {
-  min-height: 18px !important;
-  margin-bottom: 1px !important;
-  padding: 1px 2px !important;
-  font-size: 10px !important;
+  padding: 2px 6px !important;
+  font-size: 11px !important;
   line-height: 1.2 !important;
+  margin-bottom: 2px !important;
+  border-radius: 4px !important;
+}
+
+.rbc-agenda-time-cell {
+  border-width: 1px;
+  border-color: #171717;
+}
+
+.rbc-agenda-event-cell {
+  border-width: 1px;
+  border-color: #171717;
+}
+
+.rbc-agenda-date-cell {
+  border-width: 1px;
+  border-color: #171717;
 }
 
 .rbc-event:focus {

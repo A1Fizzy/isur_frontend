@@ -159,14 +159,14 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 mx-5">
+    <div className="min-h-screen bg-gray-100 box-content mx-5">
       <h1 className="text-3xl font-bold mb-6 text-center text-gray-700 pt-5">
         Личный кабинет
       </h1>
 
       {loading && <Loader />}
 
-      <div className="bg-white p-6 rounded-lg shadow text-gray-700 w-full">
+      <div className="bg-white p-6 rounded-lg shadow text-gray-700">
         {/* Информация о роли */}
         <div className="mb-6 p-3 bg-gray-50 rounded-lg">
           <p className="text-sm text-gray-600">

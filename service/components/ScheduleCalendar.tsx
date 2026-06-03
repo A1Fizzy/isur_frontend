@@ -10,6 +10,8 @@ import {
   parseISO,
   startOfMonth,
   endOfMonth,
+  startOfDay,
+  setHours
 } from "date-fns";
 import { ru } from "date-fns/locale";
 import { useState, useCallback, useEffect } from "react";
@@ -84,6 +86,11 @@ const localizer = dateFnsLocalizer({
   locales,
 });
 
+const baseDate = startOfDay(new Date());
+
+const minTime = setHours(baseDate, 8);
+const maxTime = setHours(baseDate, 21); 
+
 // Кастомный компонент для отображения события
 const CustomEvent = ({ event }: { event: ScheduleEvent }) => {
   return (
@@ -126,7 +133,7 @@ export default function ScheduleCalendar({
   const [masters, setMasters] = useState<Master[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadingRecs, setLoadingRecs] = useState(false);
-  const [currentView, setCurrentView] = useState<View>("week");
+  const [currentView, setCurrentView] = useState<View>("month");
   const [date, setDate] = useState(new Date());
   const [editingEvent, setEditingEvent] = useState<ScheduleEvent | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -150,7 +157,6 @@ export default function ScheduleCalendar({
     const baseStyle = {
       backgroundColor: "#f59e0b",
       borderRadius: "4px",
-      border: "none",
       color: "white",
       fontWeight: "500",
       cursor: role === "admin" ? "pointer" : "default",
@@ -173,6 +179,7 @@ export default function ScheduleCalendar({
           ...baseStyle,
           fontSize: "12px",
           padding: "2px",
+          width: "50%",
         },
       };
     }
@@ -395,7 +402,6 @@ export default function ScheduleCalendar({
         throw new Error("Не удалось применить");
       }
 
-      alert("Расписание успешно применено!");
       setViewMode("actual");
       fetchSchedule();
     } catch (err: any) {
@@ -405,7 +411,6 @@ export default function ScheduleCalendar({
   };
 
   const handleReject = () => {
-    alert("Рекомендации отклонены");
     setViewMode("actual");
   };
 
@@ -431,7 +436,6 @@ export default function ScheduleCalendar({
       if (viewMode === "actual") fetchSchedule();
 
       setCompletingOrder(null);
-      alert("Заказ завершен!");
     } catch (err) {
       alert(" Не удалось завершить заказ");
     } finally {
@@ -509,7 +513,7 @@ export default function ScheduleCalendar({
   };
 
   return (
-    <div className="mt-8 bg-white p-6 rounded-lg shadow">
+    <div className="flex flex-col h-screen mt-8 bg-white p-6 rounded-lg shadow">
       <h2 className="text-2xl font-semibold mb-4 text-gray-800">
         {getCalendarTitle()}
       </h2>
@@ -683,7 +687,7 @@ export default function ScheduleCalendar({
       {loading || loadingRecs ? (
         <p className="text-center">Загрузка...</p>
       ) : (
-        <div style={{ height: 600 }}>
+        
           <Calendar
             localizer={localizer}
             events={viewMode === "actual" ? events : recommendations}
@@ -696,6 +700,7 @@ export default function ScheduleCalendar({
             view={currentView}
             date={date}
             eventPropGetter={eventPropGetter}
+            showAllEvents
             onDoubleClickEvent={handleEventClick}
             components={components}
             messages={{
@@ -714,8 +719,10 @@ export default function ScheduleCalendar({
             step={15}
             timeslots={currentView === "week" ? 4 : 1}
             showMultiDayTimes={currentView === "month"}
+            max={maxTime}
+            min={minTime}
           />
-        </div>
+        
       )}
 
       {role === "admin" &&
